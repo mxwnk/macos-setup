@@ -9,7 +9,8 @@
 
 ## Shell
 
-[iTerm2](https://iterm2.com/)
+* [iTerm2](https://iterm2.com/) + zsh
+* [OhMzZsh] `sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"`
 
 ## Brew
 
