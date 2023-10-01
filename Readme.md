@@ -1,5 +1,7 @@
 # Setup for macOS
 
+This repository contains my macOS dev machine setup :)
+
 ## Tools
 
 * [Brew](https://brew.sh/)
