@@ -11,12 +11,14 @@ This repository contains my macOS dev machine setup :)
 * [Rectangle](https://rectangleapp.com/)
 * [1Password](https://1password.com/)
 
+## Brew
+
+* `brew bundle install --file ./Brewfile`
+
 ## Shell
 
 * [iTerm2](https://iterm2.com/)
 * [Zsh](https://formulae.brew.sh/formula/zsh)
 * [OhMyZsh] `sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"`
 
-## Brew
-
-* `brew bundle install --file ./Brewfile`
+![NeoFetch](./neofetch.png)
