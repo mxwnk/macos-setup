@@ -3,7 +3,7 @@
 ## Tools
 
 * [Brew](https://brew.sh/)
-* [nvchad](https://brew.sh/)
+* [nvchad](https://nvchad.com/)
 * [AltTab](https://alt-tab-macos.netlify.app/)
 * [DevToys](https://github.com/ObuchiYuki/DevToysMac.com/)
 * [Rectangle](https://rectangleapp.com/)
