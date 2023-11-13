@@ -10,6 +10,7 @@ This repository contains my macOS dev machine setup :)
 * [DevToys](https://github.com/ObuchiYuki/DevToysMac.com/)
 * [Rectangle](https://rectangleapp.com/)
 * [1Password](https://1password.com/)
+* [PDFExpert](https://pdfexpert.com/)
 
 ## Brew
 
