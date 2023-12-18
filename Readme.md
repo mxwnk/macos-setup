@@ -23,3 +23,7 @@ This repository contains my macOS dev machine setup :)
 * [OhMyZsh] `sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"`
 
 ![NeoFetch](./neofetch.png)
+
+## General
+
+* PressAndHold for vim in visual studio code: `defaults write com.microsoft.VSCode ApplePressAndHoldEnabled -bool false`
