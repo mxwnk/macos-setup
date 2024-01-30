@@ -27,4 +27,10 @@ This repository contains my macOS dev machine setup :)
 
 ## General
 
+### Key Settings
+
+See [Key Repeat Tester](https://mac-key-repeat.zaymon.dev/) to test settings:
 * PressAndHold for vim in visual studio code: `defaults write com.microsoft.VSCode ApplePressAndHoldEnabled -bool false`
+* InitialKeyRepeat: `defaults write -g InitialKeyRepeat -int 12` 
+* KeyRepeat: `defaults write -g KeyRepeat -int 2`
+
