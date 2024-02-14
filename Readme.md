@@ -12,6 +12,7 @@ This repository contains my macOS dev machine setup :)
 * [1Password](https://1password.com/)
 * [PDFExpert](https://pdfexpert.com/)
 * [Pikka](https://www.pikka.app/)
+* [Marta](https://marta.sh/)
 
 ## Brew
 
