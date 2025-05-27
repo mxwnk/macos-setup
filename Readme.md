@@ -6,7 +6,7 @@ This repository contains my macOS dev machine setup :)
 
 * [Brew](https://brew.sh/)
 * [nvchad](https://nvchad.com/)
-* [AltTab](https://alt-tab-macos.netlify.app/)
+* [Aerospace](https://github.com/nikitabobko/AeroSpace)
 * [DevToys](https://github.com/ObuchiYuki/DevToysMac.com/)
 * [Rectangle](https://rectangleapp.com/)
 * [1Password](https://1password.com/)
@@ -31,7 +31,6 @@ This repository contains my macOS dev machine setup :)
 ### Key Settings
 
 See [Key Repeat Tester](https://mac-key-repeat.zaymon.dev/) to test settings:
-* PressAndHold for vim in visual studio code: `defaults write com.microsoft.VSCode ApplePressAndHoldEnabled -bool false`
-* InitialKeyRepeat: `defaults write -g InitialKeyRepeat -int 12` 
+* PressAndHold for vim in visual studio code: `defaults write NSGlobalDomain "ApplePressAndHoldEnabled" -bool "false"`
+* InitialKeyRepeat: `defaults write -g InitialKeyRepeat -int 12`
 * KeyRepeat: `defaults write -g KeyRepeat -int 2`
-
