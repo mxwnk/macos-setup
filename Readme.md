@@ -27,7 +27,7 @@ brew bundle --file ./Brewfile
 
 ---
 
-## ⚙️ Dotfiles & Hammerspoon
+## ⚙️ Dotfiles
 
 This repo includes a minimal Hammerspoon setup with Spoons and app bindings.
 
