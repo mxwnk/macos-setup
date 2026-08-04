@@ -8,8 +8,9 @@ local apps = {
     o = "Obsidian",
     q = "Signal",
     s = "Spotify",
-    t = "iTerm",
+    t = "Ghostty",
     w = "Microsoft Teams",
+    j = "Zed"
 }
 
 for key, app in pairs(apps) do
