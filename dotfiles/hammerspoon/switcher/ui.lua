@@ -1,7 +1,8 @@
 -- Appearance of the switcher overlay. Pure data, no logic.
 
 return {
-    -- A row is added once the window count passes these thresholds.
+    -- One row up to the first threshold, and one more row past each further one.
+    -- Adding a number here adds a row; nothing else needs to change.
     rowThresholds = { 5, 12 },
 
     tileWidth = 300,

@@ -51,6 +51,12 @@ local function snapshotFor(window, size)
     local cached = id and snapshotCache[id]
     if cached and now - cached.at < snapshotTTL then return cached.image end
 
+    -- Sweep on every miss, so captures of long gone windows do not pile up for
+    -- the lifetime of the process.
+    for cachedID, entry in pairs(snapshotCache) do
+        if now - entry.at >= snapshotTTL then snapshotCache[cachedID] = nil end
+    end
+
     local image = window:snapshot()
     if image then
         image = image:setSize({ w = size.w * 2, h = size.h * 2 }) -- 2x for retina
@@ -61,18 +67,21 @@ local function snapshotFor(window, size)
 end
 
 -- Rough character-width estimate; canvas has no text measurement of its own.
+-- Counting and cutting has to happen per character rather than per byte, or a
+-- title like "Großraumbüro" loses half of an umlaut and renders as garbage.
 local function truncate(text, width)
-    local maxChars = math.floor(width / (ui.fontSize * 0.55))
-    if #text <= maxChars then return text end
-    return text:sub(1, math.max(1, maxChars - 1)) .. "…"
+    local maxChars = math.max(1, math.floor(width / (ui.fontSize * 0.55)))
+    local length = utf8.len(text)
+    if not length then return text end -- odd encoding, better left alone
+    if length <= maxChars then return text end
+
+    return text:sub(1, utf8.offset(text, maxChars) - 1) .. "…"
 end
 
 local function gridShape(count)
     local rows = 1
-    if count > ui.rowThresholds[2] then
-        rows = 3
-    elseif count > ui.rowThresholds[1] then
-        rows = 2
+    for _, threshold in ipairs(ui.rowThresholds) do
+        if count > threshold then rows = rows + 1 end
     end
 
     return rows, math.ceil(count / rows)
@@ -118,6 +127,13 @@ local function tileFrame(layout, index)
     }
 end
 
+-- Appends one element and reports where it landed, so the indices needed later
+-- are never derived from arithmetic over the element count.
+local function append(canvas, element)
+    canvas:appendElements(element)
+    return #canvas
+end
+
 local function render(windows, screenFrame)
     local layout = layoutFor(#windows, screenFrame)
     local canvas = hs.canvas.new(screenFrame)
@@ -157,7 +173,10 @@ local function render(windows, screenFrame)
             h = layout.thumbnailHeight - ui.tilePadding / 2,
         }
 
-        canvas:appendElements({
+        local app = window:application()
+        local bundleID = app and app:bundleID()
+
+        local rectIndex = append(canvas, {
             type = "rectangle",
             action = "strokeAndFill",
             fillColor = ui.tileColor,
@@ -165,22 +184,27 @@ local function render(windows, screenFrame)
             strokeWidth = 2,
             roundedRectRadii = { xRadius = ui.tileRadius, yRadius = ui.tileRadius },
             frame = { x = x, y = y, w = frame.w, h = frame.h },
-        }, {
+        })
+
+        append(canvas, {
             type = "rectangle",
             action = "fill",
             fillColor = ui.thumbnailBackgroundColor,
             roundedRectRadii = { xRadius = 6, yRadius = 6 },
             frame = thumbnailFrame,
-        }, {
+        })
+
+        local thumbnailIndex = append(canvas, {
             type = "image",
             image = nil, -- filled in progressively
             imageScaling = "scaleProportionally",
             imageAlignment = "center",
             frame = thumbnailFrame,
-        }, {
+        })
+
+        append(canvas, {
             type = "image",
-            image = window:application() and window:application():bundleID()
-                and hs.image.imageFromAppBundle(window:application():bundleID()) or nil,
+            image = bundleID and hs.image.imageFromAppBundle(bundleID) or nil,
             imageScaling = "scaleProportionally",
             frame = {
                 x = x + ui.tilePadding / 2,
@@ -188,7 +212,9 @@ local function render(windows, screenFrame)
                 w = ui.iconSize,
                 h = ui.iconSize,
             },
-        }, {
+        })
+
+        append(canvas, {
             type = "text",
             text = truncate(window:title() or "", frame.w - ui.iconSize - ui.tilePadding * 2),
             textFont = ui.fontName,
@@ -202,9 +228,7 @@ local function render(windows, screenFrame)
             },
         })
 
-        -- Element indices, so selection changes only touch the tile rectangle.
-        local base = #canvas - 5
-        tiles[index] = { rect = base + 1, thumbnail = base + 3 }
+        tiles[index] = { rect = rectIndex, thumbnail = thumbnailIndex }
     end
 
     return canvas, layout, tiles
@@ -266,7 +290,7 @@ function M.move(delta)
 end
 
 function M.moveRow(delta)
-    if state then M.move(delta * state.columns) end
+    if state then M.move(delta * state.layout.columns) end
 end
 
 -- Closes the overlay and focuses whatever was selected.
@@ -309,7 +333,6 @@ local function show(source, delta)
         windows = windows,
         tiles = tiles,
         layout = layout,
-        columns = layout.columns,
         canvas = canvas,
         selected = 1,
     }
