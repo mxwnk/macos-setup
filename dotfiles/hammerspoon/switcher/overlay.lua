@@ -19,6 +19,14 @@ local windowRules = {
     allowRoles = "AXStandardWindow",
 }
 
+-- Within a single application the minimized windows are wanted as well, so only
+-- the all-windows list drops them. Leaving out `visible` is enough: currentSpace
+-- keeps minimized windows.
+local appWindowRules = {
+    currentSpace = true,
+    allowRoles = "AXStandardWindow",
+}
+
 local allWindowsFilter = hs.window.filter.new():setDefaultFilter(windowRules)
 
 -- A window filter is bound to a fixed app name, so one is kept per application.
@@ -34,18 +42,25 @@ local function frontmostAppWindows()
 
     local name = app:name()
     if not appFilters[name] then
-        appFilters[name] = hs.window.filter.new(false):setAppFilter(name, windowRules)
+        appFilters[name] = hs.window.filter.new(false):setAppFilter(name, appWindowRules)
     end
 
     return appFilters[name]:getWindows(hs.window.filter.sortByFocusedLast)
 end
 
--- Snapshots cost roughly 50ms each, so they are scaled down and kept around
--- briefly. Repeatedly switching within a few seconds then needs no new capture.
+-- A capture costs about 16ms, measured, and 14 windows add up to a visible delay
+-- if that happens while the overlay is already on screen. The cache is therefore
+-- filled ahead of time, whenever a window loses focus: its content is final at
+-- that moment, it is still on screen, and 16ms in that spot goes unnoticed.
 local snapshotCache = {}
-local snapshotTTL = 10
+local snapshotTTL = 30
 
-local function snapshotFor(window, size)
+-- setSize only sets the logical size, it does not resample, so the entry holds
+-- the capture at full resolution. Measuring showed no growth in resident memory
+-- from holding one per window.
+local thumbnailSize = { w = 600, h = 348 }
+
+local function snapshotFor(window)
     local id = window:id()
     local now = hs.timer.secondsSinceEpoch()
     local cached = id and snapshotCache[id]
@@ -59,11 +74,30 @@ local function snapshotFor(window, size)
 
     local image = window:snapshot()
     if image then
-        image = image:setSize({ w = size.w * 2, h = size.h * 2 }) -- 2x for retina
+        image = image:setSize(thumbnailSize)
         if id then snapshotCache[id] = { image = image, at = now } end
     end
 
     return image
+end
+
+-- Warm the cache outside of the critical path. Capturing on unfocus keeps the
+-- entry for the window you just left, which is the one the next Alt-Tab selects.
+allWindowsFilter:subscribe(hs.window.filter.windowUnfocused, function(window)
+    if window then snapshotFor(window) end
+end)
+
+local function appIcon(window)
+    local app = window:application()
+    local bundleID = app and app:bundleID()
+
+    return bundleID and hs.image.imageFromAppBundle(bundleID) or nil
+end
+
+-- A minimized window cannot be captured, so its tile shows the app icon instead
+-- of staying empty.
+local function thumbnailFor(window)
+    return snapshotFor(window) or appIcon(window)
 end
 
 -- Rough character-width estimate; canvas has no text measurement of its own.
@@ -173,9 +207,6 @@ local function render(windows, screenFrame)
             h = layout.thumbnailHeight - ui.tilePadding / 2,
         }
 
-        local app = window:application()
-        local bundleID = app and app:bundleID()
-
         local rectIndex = append(canvas, {
             type = "rectangle",
             action = "strokeAndFill",
@@ -204,7 +235,7 @@ local function render(windows, screenFrame)
 
         append(canvas, {
             type = "image",
-            image = bundleID and hs.image.imageFromAppBundle(bundleID) or nil,
+            image = appIcon(window),
             imageScaling = "scaleProportionally",
             frame = {
                 x = x + ui.tilePadding / 2,
@@ -248,18 +279,25 @@ local state = nil
 -- which would otherwise leave the overlay on screen for good.
 local maxOverlayLifetime = 30
 
-local function fillThumbnails(index)
-    if not state or index > #state.windows then return end
+-- The selected tile first, the rest afterwards in order.
+local function fillOrder(count, selected)
+    local order = { selected }
+    for index = 1, count do
+        if index ~= selected then order[#order + 1] = index end
+    end
 
-    local tile = state.tiles[index]
-    local image = snapshotFor(state.windows[index], {
-        w = state.layout.tileWidth,
-        h = state.layout.thumbnailHeight,
-    })
-    if image then state.canvas[tile.thumbnail].image = image end
+    return order
+end
+
+local function fillThumbnails(position)
+    if not state or position > #state.fillOrder then return end
+
+    local index = state.fillOrder[position]
+    local image = thumbnailFor(state.windows[index])
+    if image then state.canvas[state.tiles[index].thumbnail].image = image end
 
     -- One capture per tick, so key presses stay responsive in between.
-    state.thumbnailTimer = hs.timer.doAfter(0, function() fillThumbnails(index + 1) end)
+    state.thumbnailTimer = hs.timer.doAfter(0, function() fillThumbnails(position + 1) end)
 end
 
 local function teardown()
@@ -343,7 +381,8 @@ local function show(source, delta)
     canvas:show()
 
     -- Icons are up immediately; captures follow so the overlay never feels slow.
-    state.thumbnailTimer = hs.timer.doAfter(0.05, function() fillThumbnails(1) end)
+    state.fillOrder = fillOrder(#windows, state.selected)
+    state.thumbnailTimer = hs.timer.doAfter(0.03, function() fillThumbnails(1) end)
     state.modifierTimer = hs.timer.waitWhile(modifiersHeld, M.finish, 0.01)
     state.lifetimeTimer = hs.timer.doAfter(maxOverlayLifetime, M.cancel)
 end
@@ -354,6 +393,12 @@ end
 
 function M.showAppWindows(delta)
     show(frontmostAppWindows, delta)
+end
+
+-- How many windows the frontmost application would offer, so a caller can skip
+-- opening an overlay that would only ever hold one tile.
+function M.appWindowCount()
+    return #frontmostAppWindows()
 end
 
 -- Renders the overlay to a PNG without showing or focusing anything, for checking
@@ -374,7 +419,7 @@ function M.previewToFile(path, count)
     highlight(canvas, tiles, 2)
 
     for index, window in ipairs(windows) do
-        local image = snapshotFor(window, { w = layout.tileWidth, h = layout.thumbnailHeight })
+        local image = thumbnailFor(window)
         if image then canvas[tiles[index].thumbnail].image = image end
     end
 
