@@ -1,44 +1,16 @@
--- Window switching, replaces AltTab.app:
---   Alt-Tab        cycles through all windows on the current space
---   Cmd-Tab        cycles through the windows of the frontmost application
--- Add Shift to either one to cycle backwards. While the overlay is up, the arrow
--- keys move the selection and Escape cancels. Release the modifier to focus the
--- selected window.
+-- The switcher overlay: where the windows come from, how they are laid out and
+-- drawn, and which one is selected.
 --
--- The overlay is drawn here instead of using hs.window.switcher, because that
--- module lays its windows out in a single fixed row and builds on the deprecated
--- hs.drawing.
+-- Drawn here instead of using hs.window.switcher, because that module lays its
+-- windows out in a single fixed row and builds on the deprecated hs.drawing.
+--
+-- Drawing and selection state are deliberately separate: `render` and `highlight`
+-- take everything as parameters, so rendering a preview cannot disturb an overlay
+-- that is currently on screen.
+
+local ui = require("switcher.ui")
 
 local M = {}
-
-local ui = {
-    -- A row is added once the window count passes these thresholds.
-    rowThresholds = { 5, 12 },
-
-    tileWidth = 300,
-    thumbnailRatio = 0.58, -- thumbnail height relative to tile width
-    titleHeight = 34,
-    iconSize = 20,
-    tilePadding = 14,
-    tileRadius = 10,
-
-    panelPadding = 18,
-    panelRadius = 20,
-    panelWidthFraction = 0.92, -- of the screen, before tiles are shrunk to fit
-
-    fontName = ".AppleSystemUIFont",
-    fontSize = 13,
-
-    dimColor = { white = 0, alpha = 0.30 },
-    panelColor = { red = 0.11, green = 0.11, blue = 0.12, alpha = 0.94 },
-    panelStrokeColor = { white = 1, alpha = 0.10 },
-    tileColor = { white = 1, alpha = 0.05 },
-    selectedTileColor = { white = 1, alpha = 0.16 },
-    selectedStrokeColor = { red = 0.04, green = 0.52, blue = 1.0, alpha = 0.95 },
-    thumbnailBackgroundColor = { white = 0, alpha = 0.25 },
-    titleColor = { white = 1, alpha = 0.92 },
-    transparent = { white = 0, alpha = 0 },
-}
 
 -- Visible standard windows only, and only on the space we are currently on.
 local windowRules = {
@@ -134,12 +106,6 @@ local function layoutFor(count, screenFrame)
     }
 end
 
-local state = nil
-
--- Last resort against a modifier state that never reports itself as released,
--- which would otherwise leave the overlay on screen for good.
-local maxOverlayLifetime = 30
-
 local function tileFrame(layout, index)
     local row = math.floor((index - 1) / layout.columns)
     local column = (index - 1) % layout.columns
@@ -152,7 +118,7 @@ local function tileFrame(layout, index)
     }
 end
 
-local function build(windows, screenFrame)
+local function render(windows, screenFrame)
     local layout = layoutFor(#windows, screenFrame)
     local canvas = hs.canvas.new(screenFrame)
 
@@ -244,13 +210,19 @@ local function build(windows, screenFrame)
     return canvas, layout, tiles
 end
 
-local function highlight()
-    for index, tile in ipairs(state.tiles) do
-        local selected = index == state.selected
-        state.canvas[tile.rect].fillColor = selected and ui.selectedTileColor or ui.tileColor
-        state.canvas[tile.rect].strokeColor = selected and ui.selectedStrokeColor or ui.transparent
+local function highlight(canvas, tiles, selected)
+    for index, tile in ipairs(tiles) do
+        local isSelected = index == selected
+        canvas[tile.rect].fillColor = isSelected and ui.selectedTileColor or ui.tileColor
+        canvas[tile.rect].strokeColor = isSelected and ui.selectedStrokeColor or ui.transparent
     end
 end
+
+local state = nil
+
+-- Last resort against a modifier state that never reports itself as released,
+-- which would otherwise leave the overlay on screen for good.
+local maxOverlayLifetime = 30
 
 local function fillThumbnails(index)
     if not state or index > #state.windows then return end
@@ -280,14 +252,6 @@ local function teardown()
     return selected
 end
 
-local function finish()
-    local window = teardown()
-    if window then
-        window:unminimize()
-        window:focus()
-    end
-end
-
 local function modifiersHeld()
     local raw = hs.eventtap.checkKeyboardModifiers(true)._raw
     return raw > 0 and raw ~= 65536 -- caps lock alone does not count
@@ -298,11 +262,20 @@ function M.move(delta)
 
     local count = #state.windows
     state.selected = (state.selected - 1 + delta) % count + 1
-    highlight()
+    highlight(state.canvas, state.tiles, state.selected)
 end
 
 function M.moveRow(delta)
     if state then M.move(delta * state.columns) end
+end
+
+-- Closes the overlay and focuses whatever was selected.
+function M.finish()
+    local window = teardown()
+    if window then
+        window:unminimize()
+        window:focus()
+    end
 end
 
 function M.cancel()
@@ -313,7 +286,7 @@ function M.isVisible()
     return state ~= nil
 end
 
-function M.show(source, delta)
+local function show(source, delta)
     if state then
         -- Only keep the existing overlay while a modifier is genuinely still down.
         -- Otherwise it is a leftover, and moving inside its stale window list would
@@ -330,7 +303,7 @@ function M.show(source, delta)
     if #windows == 0 then return end
 
     local screenFrame = (windows[1]:screen() or hs.screen.mainScreen()):frame()
-    local canvas, layout, tiles = build(windows, screenFrame)
+    local canvas, layout, tiles = render(windows, screenFrame)
 
     state = {
         windows = windows,
@@ -348,13 +321,21 @@ function M.show(source, delta)
 
     -- Icons are up immediately; captures follow so the overlay never feels slow.
     state.thumbnailTimer = hs.timer.doAfter(0.05, function() fillThumbnails(1) end)
-    state.modifierTimer = hs.timer.waitWhile(modifiersHeld, finish, 0.01)
+    state.modifierTimer = hs.timer.waitWhile(modifiersHeld, M.finish, 0.01)
     state.lifetimeTimer = hs.timer.doAfter(maxOverlayLifetime, M.cancel)
 end
 
--- Renders the overlay to a PNG without showing or focusing anything, for
--- checking the layout. `count` optionally repeats windows to simulate a fuller
--- grid: require("switcher").previewToFile("/tmp/switcher.png", 15)
+function M.showAllWindows(delta)
+    show(allWindows, delta)
+end
+
+function M.showAppWindows(delta)
+    show(frontmostAppWindows, delta)
+end
+
+-- Renders the overlay to a PNG without showing or focusing anything, for checking
+-- the layout. `count` optionally repeats windows to simulate a fuller grid:
+-- require("switcher").previewToFile("/tmp/switcher.png", 15)
 function M.previewToFile(path, count)
     local windows = allWindows()
     if #windows == 0 then return false, "no windows" end
@@ -366,11 +347,8 @@ function M.previewToFile(path, count)
     end
 
     local screenFrame = (windows[1]:screen() or hs.screen.mainScreen()):frame()
-    local canvas, layout, tiles = build(windows, screenFrame)
-
-    state = { windows = windows, tiles = tiles, layout = layout, columns = layout.columns,
-        canvas = canvas, selected = 2 }
-    highlight()
+    local canvas, layout, tiles = render(windows, screenFrame)
+    highlight(canvas, tiles, 2)
 
     for index, window in ipairs(windows) do
         local image = snapshotFor(window, { w = layout.tileWidth, h = layout.thumbnailHeight })
@@ -379,77 +357,8 @@ function M.previewToFile(path, count)
 
     local written = canvas:imageFromCanvas():saveToFile(path)
     canvas:delete()
-    state = nil
 
     return written
 end
-
-hs.hotkey.bind({ "alt" }, "tab", function() M.show(allWindows, 1) end)
-hs.hotkey.bind({ "alt", "shift" }, "tab", function() M.show(allWindows, -1) end)
-
-local arrowActions = {
-    [hs.keycodes.map.right] = function() M.move(1) end,
-    [hs.keycodes.map.left] = function() M.move(-1) end,
-    [hs.keycodes.map.down] = function() M.moveRow(1) end,
-    [hs.keycodes.map.up] = function() M.moveRow(-1) end,
-    [hs.keycodes.map.escape] = M.cancel,
-}
-
--- Arrow keys and Escape are only taken while the overlay is up, so that they
--- keep working normally everywhere else.
-local function handleOverlayKey(event)
-    local action = arrowActions[event:getKeyCode()]
-    if not action or not M.isVisible() then return false end
-
-    action()
-    return true
-end
-
--- macOS reserves Cmd-Tab for its own application switcher and refuses to hand it
--- over to hs.hotkey (RegisterEventHotKey fails with -9878), so the key has to be
--- caught one layer down and swallowed before the Dock ever sees it.
-local function handleCmdTab(event)
-    if event:getKeyCode() ~= hs.keycodes.map.tab then return false end
-
-    local flags = event:getFlags()
-    if flags:containExactly({ "cmd" }) then
-        M.show(frontmostAppWindows, 1)
-    elseif flags:containExactly({ "cmd", "shift" }) then
-        M.show(frontmostAppWindows, -1)
-    else
-        return false
-    end
-
-    return true
-end
-
--- Polling the system modifier state can go stale, and a stale "still held" reading
--- would keep the overlay up for good. The release event itself does not go stale,
--- so it closes the overlay too. Caps lock is ignored on purpose.
-local function handleFlagsChanged(event)
-    if not M.isVisible() then return false end
-
-    local flags = event:getFlags()
-    if not (flags.cmd or flags.alt or flags.ctrl or flags.shift or flags.fn) then
-        finish()
-    end
-
-    return false
-end
-
-local function handleEvent(event)
-    if event:getType() == hs.eventtap.event.types.flagsChanged then
-        return handleFlagsChanged(event)
-    end
-
-    return handleOverlayKey(event) or handleCmdTab(event)
-end
-
--- Kept in a global so the tap survives garbage collection, same as the config
--- watcher in config.lua.
-switcherTap = hs.eventtap.new({
-    hs.eventtap.event.types.keyDown,
-    hs.eventtap.event.types.flagsChanged,
-}, handleEvent):start()
 
 return M
