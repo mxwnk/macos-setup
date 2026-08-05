@@ -18,10 +18,16 @@ local apps = {
     q = "org.whispersystems.signal-desktop",                      -- Signal
     s = "com.spotify.client",                                     -- Spotify
     t = "com.mitchellh.ghostty",                                  -- Ghostty
-    ["f1"] = "com.mitchellh.ghostty",                             -- Ghostty
     w = "com.microsoft.teams2",                                   -- Microsoft Teams
     ["1"] = "com.google.Chrome",                                  -- Google Chrome
     ["2"] = "com.google.Chrome.dev",                              -- Google Chrome Dev
+}
+
+-- Keys that reach the app without any modifier. These are swallowed globally, so
+-- whatever the key normally does in an app is gone: F1 no longer opens help, and
+-- in IntelliJ it no longer shows quick documentation.
+local bareKeys = {
+    f1 = "com.mitchellh.ghostty", -- Ghostty
 }
 
 local M = {}
@@ -44,6 +50,10 @@ end
 
 for key, bundleID in pairs(apps) do
     hs.hotkey.bind({ "alt" }, key, function() M.activate(bundleID) end)
+end
+
+for key, bundleID in pairs(bareKeys) do
+    hs.hotkey.bind({}, key, function() M.activate(bundleID) end)
 end
 
 return M
