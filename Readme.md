@@ -7,9 +7,8 @@ Welcome! This repo contains my personal macOS dev machine setup, including dotfi
 ## 🛠️ Essential Tools
 
 - 🍺 [Homebrew](https://brew.sh/)
-- 📝 [nvchad](https://nvchad.com/) (Neovim config)
-- 🧰 [DevToys](https://github.com/ObuchiYuki/DevToysMac.com/)
-- 🪟 [Rectangle](https://rectangleapp.com/) (Window manager)
+- 👻 [Ghostty](https://ghostty.org/) (Terminal)
+- 🔨 [Hammerspoon](https://www.hammerspoon.org/) (Automation & window management)
 - 🔐 [1Password](https://1password.com/)
 - 📄 [PDFExpert](https://pdfexpert.com/)
 - 🎨 [Pikka](https://www.pikka.app/) (Color picker)
