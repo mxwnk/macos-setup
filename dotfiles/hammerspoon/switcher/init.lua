@@ -37,20 +37,29 @@ local function handleCmdTab(event)
     if event:getKeyCode() ~= hs.keycodes.map.tab then return false end
 
     local flags = event:getFlags()
+    local delta
     if flags:containExactly({ "cmd" }) then
-        overlay.showAppWindows(1)
+        delta = 1
     elseif flags:containExactly({ "cmd", "shift" }) then
-        overlay.showAppWindows(-1)
+        delta = -1
     else
         return false
+    end
+
+    -- Alt-Tab goes through hs.hotkey, which has no repeat handler, so holding it
+    -- does nothing. Match that instead of racing through the list at the key repeat
+    -- rate, but still swallow the event so the Dock stays out of it.
+    if event:getProperty(hs.eventtap.event.properties.keyboardEventAutorepeat) == 0 then
+        overlay.showAppWindows(delta)
     end
 
     return true
 end
 
--- Polling the system modifier state can go stale, and a stale "still held" reading
--- would keep the overlay up for good. The release event itself does not go stale,
--- so it closes the overlay too. Caps lock is ignored on purpose.
+-- The release event is the signal that always arrives, so it closes the overlay.
+-- The poll in overlay.lua stays on as a backstop, because Alt-Tab comes in through
+-- a Carbon hotkey and this tap through the event stream, and the two are not
+-- ordered against each other. Caps lock is ignored on purpose.
 local function handleFlagsChanged(event)
     if not overlay.isVisible() then return false end
 

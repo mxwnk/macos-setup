@@ -314,9 +314,14 @@ local function teardown()
     return selected
 end
 
+-- Only the modifiers we actually care about. `_raw` is not usable here: it exists
+-- to expose the device dependent bits that Hammerspoon normally masks off, and
+-- those live in the low 16 bits of NSEvent.modifierFlags. They are frequently set
+-- with no key held at all, so a `_raw > 0` test never reports a release.
 local function modifiersHeld()
-    local raw = hs.eventtap.checkKeyboardModifiers(true)._raw
-    return raw > 0 and raw ~= 65536 -- caps lock alone does not count
+    local mods = hs.eventtap.checkKeyboardModifiers()
+
+    return (mods.cmd or mods.alt or mods.ctrl or mods.shift or mods.fn) and true or false
 end
 
 function M.move(delta)
@@ -327,15 +332,40 @@ function M.move(delta)
     highlight(state.canvas, state.tiles, state.selected)
 end
 
+-- Moves within the column instead of stepping `columns` places through the flat
+-- list, which only preserves the column when the last row happens to be full.
 function M.moveRow(delta)
-    if state then M.move(delta * state.layout.columns) end
+    if not state then return end
+
+    local count = #state.windows
+    local columns, rows = state.layout.columns, state.layout.rows
+    local column = (state.selected - 1) % columns
+    local row = math.floor((state.selected - 1) / columns)
+
+    -- The last row can be short, so keep going rather than landing on a gap.
+    for _ = 1, rows do
+        row = (row + delta) % rows
+        local candidate = row * columns + column + 1
+        if candidate <= count then
+            state.selected = candidate
+            break
+        end
+    end
+
+    highlight(state.canvas, state.tiles, state.selected)
 end
 
 -- Closes the overlay and focuses whatever was selected.
 function M.finish()
     local window = teardown()
-    if window then
+    if not window then return end
+
+    -- Unminimizing is asynchronous, the window animates out of the Dock first, and
+    -- focusing it in the same runloop pass tends to be dropped.
+    if window:isMinimized() then
         window:unminimize()
+        hs.timer.doAfter(0.15, function() window:focus() end)
+    else
         window:focus()
     end
 end
@@ -350,10 +380,11 @@ end
 
 local function show(source, delta)
     if state then
-        -- Only keep the existing overlay while a modifier is genuinely still down.
-        -- Otherwise it is a leftover, and moving inside its stale window list would
-        -- focus something the user never selected.
-        if modifiersHeld() then
+        -- Only keep the existing overlay while a modifier is genuinely still down
+        -- and it is showing the same list. Otherwise it is either a leftover, whose
+        -- stale window list would focus something the user never selected, or it
+        -- answers a different question than the one just asked.
+        if state.source == source and modifiersHeld() then
             M.move(delta)
             return
         end
@@ -368,6 +399,7 @@ local function show(source, delta)
     local canvas, layout, tiles = render(windows, screenFrame)
 
     state = {
+        source = source,
         windows = windows,
         tiles = tiles,
         layout = layout,
