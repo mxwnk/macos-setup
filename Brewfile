@@ -11,7 +11,6 @@ brew "neofetch"
 brew "neovim"
 brew "node"
 brew "ripgrep"
-brew "zsh"
 
 cask "font-hack-nerd-font"
 cask "ghostty"
