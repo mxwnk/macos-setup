@@ -29,13 +29,17 @@ brew bundle --file ./Brewfile
 
 ## ⚙️ Dotfiles
 
-This repo includes a minimal Hammerspoon setup with Spoons and app bindings.
+This repo includes a minimal Hammerspoon setup with Spoons and app bindings, plus the Ghostty terminal config.
 
-Point Hammerspoon to this repo's config:
+Wire both up to this repo:
 
 ```bash
-cd dotfiles
-./bootstrap.sh
+./dotfiles/bootstrap.sh
 ```
 
-Then open Hammerspoon and click “Reload Config” (or enable automatic reload).
+This does two things:
+
+- points Hammerspoon at `dotfiles/hammerspoon/init.lua` (via `defaults write`)
+- symlinks `~/.config/ghostty/config` to `dotfiles/ghostty/config` (an existing real file is moved to `config.backup`)
+
+Then open Hammerspoon and click “Reload Config” (or enable automatic reload). Ghostty picks up config changes with `Cmd+Shift+,` (Reload Configuration).
