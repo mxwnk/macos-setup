@@ -7,9 +7,12 @@ keybind = ctrl+l=goto_split:right
 # --- Font (matches iTerm2 profile "Default": HackNFM-Regular) ---
 font-family = Hack Nerd Font Mono
 font-size = 20
-# iTerm2 renders bold text in the bright ANSI variant ("Use Bright Bold").
-# Ghostty has no equivalent; thickening compensates for part of it.
-font-thicken = false
+# Equivalent to iTerm2's "Thin Strokes" setting. iTerm2 defaults to thin
+# strokes on Retina only, so on a 1x display it renders with full macOS font
+# smoothing (thicker stems). Ghostty needs this enabled to match.
+# Lower font-thicken-strength (0-255) for a lighter stroke.
+font-thicken = true
+font-thicken-strength = 255
 
 # --- Colors (ported from the iTerm2 dark-mode color set) ---
 background = #263238
@@ -40,3 +43,5 @@ palette = 12=#70cfff
 palette = 13=#fc669b
 palette = 14=#9affe6
 palette = 15=#ffffff
+
+desktop-notifications = true

@@ -1,0 +1,76 @@
+export ZSH="$HOME/.oh-my-zsh"
+
+# Machine-local secrets, not tracked in the dotfiles repo.
+[ -f "$HOME/.secrets.zsh" ] && source "$HOME/.secrets.zsh"
+
+
+ZSH_THEME="robbyrussell"
+
+# Uncomment the following line if pasting URLs and other text is messed up.
+# DISABLE_MAGIC_FUNCTIONS="true"
+
+# Uncomment the following line to disable auto-setting terminal title.
+DISABLE_AUTO_TITLE="true"
+
+# ENABLE_CORRECTION="true"
+
+plugins=(git)
+
+source $ZSH/oh-my-zsh.sh
+
+[ -f /opt/homebrew/etc/profile.d/autojump.sh ] && . /opt/homebrew/etc/profile.d/autojump.sh
+alias a="agy"
+alias ai="chatgpt"
+alias c="claude"
+alias code='zed'
+alias down="docker compose down"
+alias gs="git status"
+alias gw="./gradlew"
+alias h="tldr"
+alias ha="hass-cli"
+alias ld="lazydocker"
+alias lg="lazygit"
+alias man="tldr"
+alias o="zed"
+alias oc="opencode"
+alias oct="opencode-telegram start"
+alias ocs="opencode-telegram stop"
+alias pip="pip3"
+alias python="python3"
+alias top="bottom"
+alias up="docker compose up -d"
+alias vi="nvim"
+alias vim="nvim"
+
+export PATH=/usr/local/git/bin:/usr/local/sbin:$PATH
+
+# bun completions
+# [ -s "/Users/mxwink/.bun/_bun" ] && source "/Users/mxwink/.bun/_bun"
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
+
+# Machine-specific overrides, not tracked in the dotfiles repo.
+[ -f "$HOME/.zshrc.local" ] && source "$HOME/.zshrc.local"
+
+# THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
+export SDKMAN_DIR="$HOME/.sdkman"
+[[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
+
+eval "$(ssh-agent -s)" > /dev/null 2>&1
+ssh-add --apple-use-keychain ~/.ssh/id_maxbook > /dev/null 2>&1
+ssh-add --apple-use-keychain ~/.ssh/mx_wink > /dev/null 2>&1
+
+echo "Let's rock!"
+eval "$(fnm env --use-on-cd)"
+
+# Created by `pipx` on 2025-06-08 13:34:47
+export PATH="$PATH:/Users/mxwink/.local/bin"
+
+# opencode
+export PATH=/Users/mxwink/.opencode/bin:$PATH
+
+
+# Added by Antigravity CLI installer
+export PATH="/Users/mxwink/.local/bin:$PATH"
