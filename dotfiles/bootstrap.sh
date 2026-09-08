@@ -36,7 +36,6 @@ link opencode/opencode.json  .config/opencode/opencode.json
 link opencode/tui.jsonc      .config/opencode/tui.jsonc
 link opencode/AGENTS.md      .config/opencode/AGENTS.md
 link opencode/commands       .config/opencode/commands
-link opencode/skills         .config/opencode/skills
 
 # Hammerspoon reads its config path from a preference, so it needs no symlink.
 defaults write org.hammerspoon.Hammerspoon MJConfigFile "$DOTFILES/hammerspoon/init.lua"
@@ -48,4 +47,7 @@ Machine-local files are not managed here and must exist separately:
   ~/.secrets.zsh      API tokens sourced by .zshrc
   ~/.zshrc.local      machine-specific PATH entries and OPENCODE_GHE_URL
   ~/.gitconfig.local  git identity, included by .gitconfig
+
+Agent skills are installed separately, they are not symlinked from here:
+  sh dotfiles/skills/install.sh
 EOF
