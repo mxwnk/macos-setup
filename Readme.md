@@ -8,7 +8,8 @@ Welcome! This repo contains my personal macOS dev machine setup, including dotfi
 
 - 🍺 [Homebrew](https://brew.sh/)
 - 👻 [Ghostty](https://ghostty.org/) (Terminal)
-- 🔨 [Hammerspoon](https://www.hammerspoon.org/) (Automation & window management)
+- 🔨 [Hammerspoon](https://www.hammerspoon.org/) (Automation)
+- 🔀 [Flip](https://github.com/mxwnk/flip) (Window switcher)
 - 🔐 [1Password](https://1password.com/)
 - 📄 [PDFExpert](https://pdfexpert.com/)
 - 🎨 [Pikka](https://www.pikka.app/) (Color picker)
