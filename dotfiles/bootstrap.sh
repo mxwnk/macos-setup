@@ -37,6 +37,8 @@ link opencode/tui.jsonc      .config/opencode/tui.jsonc
 link opencode/AGENTS.md      .config/opencode/AGENTS.md
 link opencode/commands       .config/opencode/commands
 
+link claude/commands         .claude/commands
+
 # Hammerspoon reads its config path from a preference, so it needs no symlink.
 defaults write org.hammerspoon.Hammerspoon MJConfigFile "$DOTFILES/hammerspoon/init.lua"
 echo "pref Hammerspoon -> $DOTFILES/hammerspoon/init.lua"

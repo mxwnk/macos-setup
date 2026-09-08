@@ -46,6 +46,7 @@ It symlinks these into `$HOME`, moving an existing real file to `<name>.backup` 
 | `opencode/tui.jsonc`          | `~/.config/opencode/tui.jsonc`        |
 | `opencode/AGENTS.md`          | `~/.config/opencode/AGENTS.md`        |
 | `opencode/commands`           | `~/.config/opencode/commands`         |
+| `claude/commands`             | `~/.claude/commands`                  |
 
 Hammerspoon is the exception: it reads its config path from a preference, so the script points it at `dotfiles/hammerspoon/init.lua` via `defaults write` instead of symlinking.
 
@@ -70,3 +71,5 @@ sh skills/install.sh
 ```
 
 The canonical copy lands in `~/.agents/skills/`, which Claude Code and opencode both read.
+
+Claude Code exposes every skill as a slash command by itself (`/tdd`, `/code-review`), so `claude/commands` only holds commands that are not skills. opencode needs the thin wrappers in `opencode/commands` for the same effect.
