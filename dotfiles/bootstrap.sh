@@ -34,12 +34,17 @@ link ghostty/config          .config/ghostty/config
 link zsh/zshrc               .zshrc
 link git/gitconfig           .gitconfig
 link git/gitignore_global    .gitignore_global
+link cmux/cmux.json          .config/cmux/cmux.json
+link zed/settings.json       .config/zed/settings.json
+
+link agents/AGENTS.md        .config/opencode/AGENTS.md
+link agents/AGENTS.md        .claude/CLAUDE.md
 
 link opencode/opencode.json  .config/opencode/opencode.json
 link opencode/tui.jsonc      .config/opencode/tui.jsonc
-link opencode/AGENTS.md      .config/opencode/AGENTS.md
 link opencode/commands       .config/opencode/commands
 
+link claude/settings.json    .claude/settings.json
 link claude/commands         .claude/commands
 link ../skills/jira          .claude/skills/jira
 

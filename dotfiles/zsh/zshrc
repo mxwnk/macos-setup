@@ -45,7 +45,7 @@ alias vim="nvim"
 export PATH=/usr/local/git/bin:/usr/local/sbin:$PATH
 
 # bun completions
-# [ -s "/Users/mxwink/.bun/_bun" ] && source "/Users/mxwink/.bun/_bun"
+# [ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
 
 # bun
 export BUN_INSTALL="$HOME/.bun"
@@ -65,12 +65,4 @@ ssh-add --apple-use-keychain ~/.ssh/mx_wink > /dev/null 2>&1
 echo "Let's rock!"
 eval "$(fnm env --use-on-cd)"
 
-# Created by `pipx` on 2025-06-08 13:34:47
-export PATH="$PATH:/Users/mxwink/.local/bin"
-
-# opencode
-export PATH=/Users/mxwink/.opencode/bin:$PATH
-
-
-# Added by Antigravity CLI installer
-export PATH="/Users/mxwink/.local/bin:$PATH"
+export PATH="$HOME/.local/bin:$HOME/.opencode/bin:$PATH"

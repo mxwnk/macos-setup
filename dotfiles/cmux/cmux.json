@@ -1,0 +1,394 @@
+{
+  "$schema": "https://raw.githubusercontent.com/manaflow-ai/cmux/main/web/data/cmux.schema.json",
+  "schemaVersion": 1,
+    "app" : {
+      "appIcon" : "automatic",
+      "windowTitleTemplate" : "",
+      "focusPaneOnFirstClick" : false,
+      "openSupportedFilesInCmux" : true,
+      "openMarkdownInCmuxViewer" : true,
+      "sendAnonymousTelemetry" : true,
+      "iMessageMode" : false,
+      "confirmQuit" : "always",
+      "warnBeforeClosingTab" : true,
+      "forkConversationDefaultDestination" : "right",
+      "reorderOnNotification" : true,
+      "minimalMode" : false,
+      "renameSelectsExistingName" : true,
+      "commandPaletteSearchesAllSurfaces" : false,
+      "preferredEditor" : "",
+      "warnBeforeClosingTabXButton" : false,
+      "newWorkspacePlacement" : "afterCurrent",
+      "menuBarOnly" : false,
+      "hideTabCloseButton" : false,
+      "focusHistoryIncludesPanesAndTabs" : false,
+      "appearance" : "system",
+      "workspaceInheritWorkingDirectory" : true,
+      "language" : "system",
+      "keepWorkspaceOpenWhenClosingLastSurface" : false
+    },
+
+    "workspaceGroups" : {
+      "newWorkspacePlacement" : "afterCurrent"
+    },
+
+    "terminal" : {
+      "copyOnSelect" : false,
+      "rendererRealization" : {
+        "enabled" : true,
+        "maxWarmRenderers" : 1,
+        "idleSeconds" : 5
+      },
+      "textBoxDefaultSubmitAction" : "text-entry",
+      "textBoxMaxLines" : 10,
+      "agentHibernation" : {
+        "maxLiveTerminals" : 12,
+        "enabled" : false,
+        "idleSeconds" : 5
+      },
+      "textBoxSubmitActions" : [
+        {
+          "systemImage" : "sparkle",
+          "assetName" : "AgentIcons\/Claude",
+          "title" : "Claude Dangerous",
+          "backgroundColorHex" : "#F6D5C8",
+          "commandTemplate" : "claude --dangerously-skip-permissions -- {{prompt}}",
+          "kind" : "commandTemplate",
+          "id" : "claude"
+        },
+        {
+          "kind" : "commandTemplate",
+          "commandTemplate" : "codex --yolo -- {{prompt}}",
+          "title" : "Codex --yolo",
+          "systemImage" : "sparkles",
+          "assetName" : "AgentIcons\/Codex",
+          "id" : "codex",
+          "backgroundColorHex" : "#8FDBFF"
+        },
+        {
+          "backgroundColorHex" : "#B5E48C",
+          "title" : "OpenCode",
+          "systemImage" : "curlybraces",
+          "id" : "opencode",
+          "assetName" : "AgentIcons\/OpenCode",
+          "commandTemplate" : "opencode --prompt {{prompt}}",
+          "kind" : "commandTemplate"
+        },
+        {
+          "title" : "Pi",
+          "kind" : "commandTemplate",
+          "id" : "pi",
+          "systemImage" : "brain.head.profile",
+          "assetName" : "AgentIcons\/Pi",
+          "commandTemplate" : "pi -- {{prompt}}",
+          "backgroundColorHex" : "#D0B3FF"
+        }
+      ],
+      "showScrollBar" : true,
+      "autoResumeAgentSessions" : true,
+      "focusTextBoxOnNewTerminals" : false,
+      "sessionContentMaxWidth" : false,
+      "showTextBoxOnNewTerminals" : false,
+      "resumeCommands" : [
+
+      ],
+      "scrollSpeed" : 1,
+      "sessionContentAlignment" : "center"
+    },
+
+    "notifications" : {
+      "sound" : "default",
+      "command" : "",
+      "hooksMode" : "append",
+      "customSoundFilePath" : "",
+      "showInMenuBar" : true,
+      "paneFlash" : true,
+      "hooks" : [
+
+      ],
+      "dockBadge" : true,
+      "unreadPaneRing" : true
+    },
+
+    "sidebar" : {
+      "beta" : {
+        "workspaceTodos" : {
+          "checklistStyle" : "popover",
+          "controls" : {
+            "enabled" : false
+          }
+        }
+      },
+      "pathLastSegmentOnly" : false,
+      "showPullRequests" : true,
+      "openPullRequestLinksInCmuxBrowser" : true,
+      "notificationMessageLineLimit" : 12,
+      "showWorkspaceDescription" : true,
+      "showBranchDirectory" : true,
+      "stackBranchDirectory" : false,
+      "openPortLinksInCmuxBrowser" : true,
+      "showPorts" : true,
+      "showLog" : true,
+      "showNotificationMessage" : true,
+      "showCustomMetadata" : true,
+      "showSSH" : true,
+      "watchGitStatus" : true,
+      "makePullRequestsClickable" : true,
+      "showProgress" : true,
+      "showAgentActivity" : true,
+      "hideAllDetails" : false,
+      "branchLayout" : "vertical",
+      "wrapWorkspaceTitles" : false
+    },
+
+    "workspaceColors" : {
+      "selectionColor" : null,
+      "notificationBadgeColor" : null,
+      "indicatorStyle" : "leftRail",
+      "colors" : {
+        "Crimson" : "#922B21",
+        "Rose" : "#880E4F",
+        "Green" : "#196F3D",
+        "Magenta" : "#AD1457",
+        "Charcoal" : "#3E4B5E",
+        "Teal" : "#006B6B",
+        "Orange" : "#A04000",
+        "Olive" : "#4A5C18",
+        "Aqua" : "#0E6B8C",
+        "Navy" : "#1A5276",
+        "Indigo" : "#283593",
+        "Blue" : "#1565C0",
+        "Red" : "#C0392B",
+        "Brown" : "#7B3F00",
+        "Purple" : "#6A1B9A",
+        "Amber" : "#7D6608"
+      }
+    },
+
+    "sidebarAppearance" : {
+      "tintColor" : "#000000",
+      "matchTerminalBackground" : false,
+      "tintOpacity" : 0.17999999999999999,
+      "lightModeTintColor" : null,
+      "darkModeTintColor" : null
+    },
+
+    "automation" : {
+      "ripgrepBinaryPath" : "",
+      "socketControlMode" : "cmuxOnly",
+      "claudeBinaryPath" : "",
+      "portRange" : 10,
+      "kiroIntegration" : true,
+      "socketPassword" : "",
+      "ampIntegration" : true,
+      "geminiIntegration" : true,
+      "cursorIntegration" : true,
+      "claudeCodeIntegration" : true,
+      "suppressSubagentNotifications" : true,
+      "kiroNotificationLevel" : "standard",
+      "portBase" : 9100
+    },
+
+    "browser" : {
+      "discardHiddenWebViews" : true,
+      "hiddenWebViewDiscardDelaySeconds" : 300,
+      "urlsToAlwaysOpenExternally" : [
+
+      ],
+      "customSearchEngineName" : "",
+      "openTerminalLinksInCmuxBrowser" : true,
+      "askWhereToSaveDownloads" : false,
+      "insecureHttpHostsAllowedInEmbeddedBrowser" : [
+        "localhost",
+        "*.localhost",
+        "127.0.0.1",
+        "::1",
+        "0.0.0.0",
+        "*.localtest.me"
+      ],
+      "showImportHintOnBlankTabs" : true,
+      "showSearchSuggestions" : true,
+      "reactGrabVersion" : "0.1.29",
+      "customSearchEngineURLTemplate" : "https:\/\/www.google.com\/search?q={query}",
+      "interceptTerminalOpenCommandInCmuxBrowser" : true,
+      "hostsToOpenInEmbeddedBrowser" : [
+
+      ],
+      "defaultSearchEngine" : "google",
+      "theme" : "system"
+    },
+
+    "mobile" : {
+      "artifactFolderAccess" : "subtree"
+    },
+
+    "markdown" : {
+      "fontFamily" : "",
+      "fontSize" : 15,
+      "maxWidth" : 980
+    },
+
+    "fileEditor" : {
+      "wordWrap" : false
+    },
+
+    "fileExplorer" : {
+      "doubleClickAction" : "preview"
+    },
+
+    "diffViewer" : {
+      "defaultLayout" : "unified"
+    },
+
+    "shortcuts" : {
+      "bindings" : {
+        "moveWorkspaceUp" : "cmd+opt+ctrl+[",
+        "canvasAlignBottom" : "",
+        "focusPreviousPane" : "",
+        "canvasEqualizeWidths" : "",
+        "moveSurfaceToPaneUp" : "cmd+shift+opt+↑",
+        "markWorkspaceDone" : "cmd+;",
+        "fileExplorerOpenSelectionFinderAlias" : "cmd+↓",
+        "simulatorToggleAppearance" : "cmd+shift+a",
+        "focusLeft" : "cmd+opt+←",
+        "commandPalette" : "cmd+shift+p",
+        "focusHistoryBack" : "cmd+[",
+        "canvasRevealFocusedPane" : "cmd+ctrl+r",
+        "browserHardReload" : "cmd+shift+r",
+        "browserBack" : "cmd+[",
+        "closeWorkspace" : "cmd+shift+w",
+        "increaseWorkspaceTerminalFontSize" : "cmd+ctrl+=",
+        "openBrowser" : "cmd+shift+l",
+        "toggleFocusedWorkspaceGroupCollapsed" : "cmd+ctrl+.",
+        "newBrowserWorkspace" : "cmd+opt+n",
+        "focusTextBoxInput" : "cmd+shift+a",
+        "clearScreenKeepScrollback" : "cmd+shift+k",
+        "decreaseWorkspaceTerminalFontSize" : "cmd+ctrl+-",
+        "canvasEqualizeHeights" : "",
+        "openDiffViewer" : "cmd+shift+ctrl+d",
+        "toggleBrowserDesignMode" : "cmd+opt+ctrl+d",
+        "focusRightSidebar" : "cmd+shift+e",
+        "openFolder" : "cmd+o",
+        "focusHistoryForward" : "cmd+]",
+        "canvasAlignLeft" : "",
+        "splitRight" : "cmd+d",
+        "openSettings" : "cmd+,",
+        "focusRight" : "cmd+opt+→",
+        "equalizeSplits" : "cmd+shift+ctrl+=",
+        "prevSurface" : "cmd+shift+[",
+        "canvasZoomOut" : "cmd+opt+-",
+        "showHideAllWindows" : "cmd+opt+ctrl+.",
+        "triggerFlash" : "cmd+shift+h",
+        "toggleReactGrab" : "cmd+shift+g",
+        "saveLayoutTemplate" : "cmd+ctrl+s",
+        "quit" : "cmd+q",
+        "splitBrowserRight" : "cmd+opt+d",
+        "closeOtherTabsInPane" : "cmd+opt+t",
+        "hideFind" : "cmd+shift+opt+f",
+        "markdownZoomIn" : "cmd+=",
+        "globalSearch" : "cmd+opt+f",
+        "toggleChecklistItemComplete" : "cmd+return",
+        "moveSurfaceToPreviousPane" : "cmd+shift+ctrl+[",
+        "nextSidebarTab" : "cmd+ctrl+]",
+        "goToWorkspace" : "cmd+p",
+        "browserReload" : "cmd+r",
+        "prevSidebarTab" : "cmd+ctrl+[",
+        "toggleTerminalCopyMode" : "cmd+shift+m",
+        "reopenClosedBrowserPanel" : "cmd+shift+t",
+        "browserZoomOut" : "cmd+-",
+        "diffViewerScrollToTop" : [
+          "g",
+          "g"
+        ],
+        "canvasDistributeVertically" : "",
+        "splitDown" : "cmd+shift+d",
+        "canvasZoomIn" : "cmd+opt+=",
+        "sendCtrlFToTerminal" : "",
+        "renameTab" : "cmd+r",
+        "reopenClosedWorkspace" : "",
+        "canvasZoomReset" : "cmd+0",
+        "renameWorkspace" : "cmd+shift+r",
+        "selectWorkspaceByNumber" : "cmd+1",
+        "focusDown" : "cmd+opt+↓",
+        "toggleCanvasLayout" : "cmd+ctrl+c",
+        "groupSelectedWorkspaces" : "cmd+shift+g",
+        "diffViewerScrollToBottom" : "shift+g",
+        "toggleSidebar" : "cmd+b",
+        "diffViewerScrollDown" : "j",
+        "closeWindow" : "cmd+ctrl+w",
+        "showBrowserJavaScriptConsole" : "cmd+opt+c",
+        "canvasOverview" : "cmd+ctrl+o",
+        "diffViewerScrollHalfPageDown" : "ctrl+d",
+        "toggleFullScreen" : "cmd+ctrl+f",
+        "attachTextBoxFile" : "cmd+shift+opt+a",
+        "resetWorkspaceTerminalFontSize" : "cmd+ctrl+0",
+        "commandPaletteNext" : "ctrl+n",
+        "browserZoomReset" : "cmd+0",
+        "reopenPreviousSession" : "cmd+shift+o",
+        "newWindow" : "cmd+shift+n",
+        "diffViewerOpenFileSearch" : "\/",
+        "sendFeedback" : "",
+        "nextSurface" : "cmd+shift+]",
+        "focusUp" : "cmd+opt+↑",
+        "canvasAlignTop" : "",
+        "diffViewerScrollUpEmacs" : "ctrl+p",
+        "reloadConfiguration" : "cmd+shift+,",
+        "editWorkspaceDescription" : "cmd+opt+e",
+        "cycleWorkspaceStatus" : "cmd+shift+;",
+        "markdownZoomReset" : "cmd+0",
+        "showNotifications" : "cmd+i",
+        "toggleFileExplorer" : "cmd+opt+b",
+        "focusBrowserAddressBar" : "cmd+l",
+        "toggleBrowserFocusMode" : "cmd+opt+return",
+        "focusNextPane" : "",
+        "canvasTidy" : "cmd+ctrl+t",
+        "saveFilePreview" : "cmd+s",
+        "moveWorkspaceDown" : "cmd+opt+ctrl+]",
+        "useSelectionForFind" : "cmd+e",
+        "toggleBrowserDeveloperTools" : "cmd+opt+i",
+        "moveSurfaceLeft" : "cmd+shift+opt+[",
+        "jumpToUnread" : "cmd+shift+u",
+        "fileExplorerOpenSelection" : "return",
+        "findNext" : "cmd+g",
+        "moveSurfaceToPaneLeft" : "cmd+shift+opt+←",
+        "toggleSplitZoom" : "cmd+shift+return",
+        "simulatorRotateLeft" : "cmd+←",
+        "commandPalettePrevious" : "ctrl+p",
+        "moveSurfaceToPaneDown" : "cmd+shift+opt+↓",
+        "diffViewerPreviousFile" : [
+          "[",
+          "f"
+        ],
+        "browserForward" : "cmd+]",
+        "simulatorRotateRight" : "cmd+→",
+        "diffViewerScrollUp" : "k",
+        "closeTab" : "cmd+w",
+        "selectSurfaceByNumber" : "ctrl+1",
+        "findPrevious" : "cmd+opt+g",
+        "cycleTextBoxSubmitAction" : "shift+tab",
+        "find" : "cmd+f",
+        "moveSurfaceRight" : "cmd+shift+opt+]",
+        "diffViewerNextFile" : [
+          "]",
+          "f"
+        ],
+        "browserZoomIn" : "cmd+=",
+        "newTab" : "cmd+n",
+        "moveSurfaceToNextPane" : "cmd+shift+ctrl+]",
+        "toggleUnread" : "cmd+opt+u",
+        "moveSurfaceToPaneRight" : "cmd+shift+opt+→",
+        "markdownZoomOut" : "cmd+-",
+        "diffViewerScrollDownEmacs" : "ctrl+n",
+        "simulatorToggleSoftwareKeyboard" : "cmd+k",
+        "splitBrowserDown" : "cmd+shift+opt+d",
+        "diffViewerScrollHalfPageUp" : "ctrl+u",
+        "newSurface" : "cmd+t",
+        "simulatorHome" : "cmd+shift+h",
+        "canvasAlignRight" : "",
+        "markOldestUnreadAndJumpNext" : "cmd+ctrl+u",
+        "canvasDistributeHorizontally" : "",
+        "newWorkspaceGroup" : "cmd+ctrl+g",
+        "findInDirectory" : "cmd+shift+f"
+      }
+    },
+}
