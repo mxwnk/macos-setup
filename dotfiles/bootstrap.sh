@@ -14,6 +14,9 @@ link() {
 		return
 	fi
 
+	# Collapse any ".." so the symlink points at a clean path.
+	src=$(cd "$(dirname "$src")" && pwd)/$(basename "$src")
+
 	mkdir -p "$(dirname "$dst")"
 
 	if [ -L "$dst" ]; then
@@ -38,6 +41,7 @@ link opencode/AGENTS.md      .config/opencode/AGENTS.md
 link opencode/commands       .config/opencode/commands
 
 link claude/commands         .claude/commands
+link ../skills/jira          .claude/skills/jira
 
 # Hammerspoon reads its config path from a preference, so it needs no symlink.
 defaults write org.hammerspoon.Hammerspoon MJConfigFile "$DOTFILES/hammerspoon/init.lua"
@@ -49,6 +53,7 @@ Machine-local files are not managed here and must exist separately:
   ~/.secrets.zsh      API tokens sourced by .zshrc
   ~/.zshrc.local      machine-specific PATH entries and OPENCODE_GHE_URL
   ~/.gitconfig.local  git identity, included by .gitconfig
+  ~/.config/.jira/.config.yml  jira-cli server and login for /jira (jira init)
 
 Agent skills are installed separately, they are not symlinked from here:
   sh skills/install.sh
