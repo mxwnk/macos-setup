@@ -49,5 +49,5 @@ Machine-local files are not managed here and must exist separately:
   ~/.gitconfig.local  git identity, included by .gitconfig
 
 Agent skills are installed separately, they are not symlinked from here:
-  sh dotfiles/skills/install.sh
+  sh skills/install.sh
 EOF
