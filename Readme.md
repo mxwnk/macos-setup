@@ -27,6 +27,18 @@ brew bundle --file ./Brewfile
 
 ---
 
+## 🍏 macOS Preferences
+
+A skeleton script configuring common macOS system defaults (Finder, Dock, fast keyboard repeat rate, Screenshots destination, etc.):
+
+```bash
+./macos/defaults.sh
+```
+
+The script applies every setting it contains and restarts Finder, Dock and SystemUIServer at the end — read it and adjust the values before running it. Some changes only take effect after a logout.
+
+---
+
 ## ⚙️ Dotfiles
 
 One script wires everything into place:
@@ -43,10 +55,14 @@ It symlinks these into `$HOME`, moving an existing real file to `<name>.backup` 
 | `dotfiles/zsh/zshrc`             | `~/.zshrc`                            |
 | `dotfiles/git/gitconfig`         | `~/.gitconfig`                        |
 | `dotfiles/git/gitignore_global`  | `~/.gitignore_global`                 |
+| `dotfiles/cmux/cmux.json`        | `~/.config/cmux/cmux.json`            |
+| `dotfiles/zed/settings.json`     | `~/.config/zed/settings.json`         |
+| `dotfiles/agents/AGENTS.md`      | `~/.config/opencode/AGENTS.md`        |
+| `dotfiles/agents/AGENTS.md`      | `~/.claude/CLAUDE.md`                 |
 | `dotfiles/opencode/opencode.json`| `~/.config/opencode/opencode.json`    |
 | `dotfiles/opencode/tui.jsonc`    | `~/.config/opencode/tui.jsonc`        |
-| `dotfiles/opencode/AGENTS.md`    | `~/.config/opencode/AGENTS.md`        |
 | `dotfiles/opencode/commands`     | `~/.config/opencode/commands`         |
+| `dotfiles/claude/settings.json`  | `~/.claude/settings.json`             |
 | `dotfiles/claude/commands`       | `~/.claude/commands`                  |
 | `skills/jira`                    | `~/.claude/skills/jira`               |
 
