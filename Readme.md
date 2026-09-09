@@ -39,6 +39,18 @@ The script applies every setting it contains and restarts Finder, Dock and Syste
 
 ---
 
+## 🖥️ Display Sleep
+
+`dotfiles/hammerspoon/display.lua` adds a menu bar item that keeps the display awake on click. It holds a wake assertion rather than changing `pmset displaysleep`, because an assertion overrides that value anyway — which is also how a forgotten menu bar app can keep the screen on all night. The glyph says which of three things is going on:
+
+| Glyph                | Meaning                                                |
+| -------------------- | ------------------------------------------------------ |
+| Outline, dark screen | the display sleeps on its own                          |
+| Amber, lit screen    | Hammerspoon is keeping it awake                        |
+| Red, lit screen      | another app is keeping it awake — the tooltip names it |
+
+---
+
 ## ⚙️ Dotfiles
 
 One script wires everything into place:

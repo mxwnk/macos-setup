@@ -8,6 +8,7 @@ require("hs.ipc")
 require("config")
 require("urlhandler")
 require("mic")
+require("display")
 
 -- Window switching and the app hotkeys moved to Flip, a native switcher:
 -- https://github.com/mxwnk/flip. Both are off rather than just the switcher,
