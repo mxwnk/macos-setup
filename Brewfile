@@ -71,6 +71,7 @@ cask "intellij-idea"
 
 # Window management and menu bar
 cask "hammerspoon"
+cask "jordanbaird-ice"
 cask "mxwnk/tap/flip", trusted: true
 
 # Daily drivers
