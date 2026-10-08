@@ -125,6 +125,14 @@ defaults write NSGlobalDomain PMPrintingExpandedStateForPrint -bool true
 defaults write NSGlobalDomain PMPrintingExpandedStateForPrint2 -bool true
 
 ###############################################################################
+# Menu Bar                                                                    #
+###############################################################################
+
+# Tighter status item spacing so more items fit next to the notch on the built-in display
+defaults -currentHost write -globalDomain NSStatusItemSpacing -int 6
+defaults -currentHost write -globalDomain NSStatusItemSelectionPadding -int 4
+
+###############################################################################
 # Restart Affected Applications                                               #
 ###############################################################################
 

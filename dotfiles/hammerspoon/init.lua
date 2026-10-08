@@ -4,6 +4,9 @@ hs.loadSpoon("EmmyLua")
 -- Message port for the `hs` command line tool
 require("hs.ipc")
 
+-- The menu bar is crowded next to the notch; the console stays reachable via `hs -c`.
+hs.menuIcon(false)
+
 -- User config
 require("config")
 require("urlhandler")

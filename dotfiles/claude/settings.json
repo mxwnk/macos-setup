@@ -2,12 +2,12 @@
   "attribution": {
     "commit": ""
   },
-  "model": "opus[1m]",
   "hooks": {},
   "enabledPlugins": {
     "swift-lsp@claude-plugins-official": true,
     "clangd-lsp@claude-plugins-official": true
   },
   "tui": "fullscreen",
-  "skipWorkflowUsageWarning": true
+  "skipWorkflowUsageWarning": true,
+  "switchModelsOnFlag": true
 }
