@@ -10,7 +10,6 @@ hs.menuIcon(false)
 -- User config
 require("config")
 require("urlhandler")
-require("mic")
 require("display")
 
 -- Window switching and the app hotkeys moved to Flip, a native switcher:
